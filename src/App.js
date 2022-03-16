@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
-
 
 function App() {
-  const value = 'World';
 
   // current file to upload into container
   const [fileSelected, setFileSelected] = useState(null);
-  const [text, setText] = useState(null);
+  const [text, setText] = useState("Привіт Люба");
   const [uploading, setUploading] = useState(false);
   const [processed, setProcessed] = useState(false);
   const [inputKey, setInputKey] = useState(Math.random().toString(36));
@@ -66,20 +62,30 @@ function App() {
     setProcessed(false);
 
     // *** SEND TEXT TO Azure Functions ***
-    
-    // await fetch("/api/formreco", requestOptions)
-    //     .then((response) => {
-    //       if (!response.ok) {
-    //         throw new Error(
-    //           `This is an HTTP error: The status is ${response.status}`
-    //         );
-    //       }
-    //       return response.json();
-          
-    //     })
-    //     .then((data) => setFormRecoResults(data))
-    //     .catch(error => console.log('error', error));
 
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "text/plain");
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: '{"text": "'+text+'"}',
+      redirect: 'follow'
+    };
+    
+    await fetch("/api/translate-text-api", requestOptions)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `This is an HTTP error: The status is ${response.status}`
+            );
+          }
+          return response.json();
+          
+        })
+        .then((data) => setTranslatedResults(data))
+        .catch(error => console.log('error', error));
+    // console.log(translatedResults)
     setProcessed(true)
 
     // reset state/form
@@ -90,13 +96,13 @@ function App() {
 
   const DisplayResults = () => ( 
     <div>
-      Translated: {translatedResults}
+      Translated: {translatedResults[0].translations[0].text}
     </div>
   )
   const render = () => (
       <div className="columns is-centered">
         <div className="column is-half">
-          <div class="content mt-4">
+          <div className="content mt-4">
             <h5 className="title is-5">Info</h5>
             <p><strong>Translator</strong> služby Azure Congnitive Sevices.</p>
             <p>Text v poli níže můžete nahradit libovolným jiným textem.</p>
