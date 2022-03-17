@@ -10,7 +10,7 @@ import requests
 
 def get_blob_base_url_from_connection_string():
     
-    connect_str = os.environ["AzureWebJobsStorage"]
+    connect_str = os.environ["TRANSLATOR_DOCU_STORAGE_CONNECTION"]
     connect_str_parts = connect_str.split(";")
 
     url_DefaultEndpointsProtocol = connect_str_parts[0].split("=")[1] # DefaultEndpointsProtocol
@@ -59,8 +59,8 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     # checking for a POST request.
 
      # # This is the call to the Form Recognizer endpoint
-    connect_str = os.environ["AzureWebJobsStorage"]
-    blob_container = os.environ["AzureWebJobsStorageContainer"]
+    connect_str = os.environ["TRANSLATOR_DOCU_STORAGE_CONNECTION"]
+    blob_container = os.environ["TRANSLATOR_DOCU_STORAGE_CONTAINER"]
 
     # connect_str_parts = connect_str.split(";")
     # url_DefaultEndpointsProtocol = connect_str_parts[0].split("=")[1] # DefaultEndpointsProtocol
